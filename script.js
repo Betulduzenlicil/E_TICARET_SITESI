@@ -1,3 +1,4 @@
+//+ selectorleri tanımla
 const btnDivs = document.getElementById("btns");
 const productDivs = document.getElementById("products");
 const searchInput = document.getElementById("searchInput");
@@ -10,12 +11,22 @@ const sepetPosition = document.getElementById("sepet")
 
 
 // https://anthonyfs.pythonanywhere.com/api/products/
-
+//+ değişkenleri lazım oldukça olutur ve buraya yaz
+const btnColors = [
+  "primary",
+  "secondary",
+  "success",
+  "info",
+  "warning",
+  "danger",
+  "light",
+  "dark",
+];
 let products = [];
 let baskets = [];
 let countBasket = 0;
 
-//* FETCH İŞLEMİ
+//+ FETCH İŞLEMİNİ BAŞLAT
 
 const getProducts = async () => {
   const url = "https://anthonyfs.pythonanywhere.com/api/products/";
@@ -37,14 +48,15 @@ const getProducts = async () => {
 
 getProducts();
 
-//* KATEGORİ İŞLEMİ
+
+//+ KATEGORİ İŞLEMİ
 
 const category = () => {
   console.log(products);
   // const categoryArr = products.map(item => item.category)
-  // array return eder.
+  //- array return eder.
   // console.log(categoryArr);
-  // kategorileri topladık.
+  //- kategorileri topladık.
 
   //! tekrar eden değerleri teke düşürme
   // //? 1. yol
@@ -69,20 +81,8 @@ const category = () => {
   // }
 
   //? 3. yol
-
-  const btnColors = [
-    "primary",
-    "secondary",
-    "success",
-    "info",
-    "warning",
-    "danger",
-    "light",
-    "dark",
-  ];
-
   //! tekrar eden değerleri teke düşürme
-  // Set benzersiz değerleri tutan bir JavaScript nesnesidir. Her veri tipinde değer tutabilir. Fakat aynı değeri birden fazla kez içeremez
+  //~ Set benzersiz değerleri tutan bir JavaScript nesnesidir. Her veri tipinde değer tutabilir. Fakat aynı değeri birden fazla kez içeremez
 
   const categoryArr = [
     "all",
@@ -90,6 +90,9 @@ const category = () => {
   ];
   console.log(categoryArr);
 
+
+  //+ CATEGORY BUTONLARINI OLUŞTURDUK
+  // categoryArr arayındeki herbir categoriyi gezdik bu arraydeki herbir index için bir buton oluşturduk bu butonu btndivse bağladık clas olarak btn colors arryını indexler ile oluşan butonlara atadık
   categoryArr.forEach((category, i) => {
     const btn = document.createElement("button");
     btn.innerText = category.toUpperCase();
@@ -101,11 +104,11 @@ const category = () => {
 //  senkron yapısından dolayı veriyi göremiyoruz. [] verir halbuki veri vardır
 console.log(products);
 
-//* ÜRÜNLERİ LİSTELEME
-
-function displayProducts(arr) {
+//+ ÜRÜNLERİ LİSTELEME
+// butun veriyi içeren products arrayini gezdi bu arraydeki her bir objenin istenilen keylerini destructure yaptı productDive yazdırdı
+function displayProducts(products) {
   productDivs.innerHTML = "";
-  arr.forEach((item) => {
+ products.forEach((item) => {
     const { id, title, description, price, image } = item;
     const productDiv = document.createElement("div");
     productDiv.classList.add("col");
@@ -131,12 +134,12 @@ function displayProducts(arr) {
               </div>
             </div>
           `;
-
+//+ Sepete ekle  utonunun tıklanma eventı addtoCart fonksiyonundaki olay gerçekleşti
     productDiv.addEventListener("click", (e) => {
       if (e.target.classList.contains("btn-danger")) {
         addToCart(item);
-
-        //! arrayden gelen ürün bilgisi elimizde olduğu için direk itemi yani seçilen ürünü aldık ve baskete yolladık.
+      //! arrayden gelen ürün bilgisi elimizde olduğu için direk itemi yani seçilen ürünü aldık ve baskete yolladık.
+      //+ see details butonu tıklandı modal ortaya çıktı yani showModal fonksiyonu çağrıldı çalıştı
       } else if (e.target.classList.contains("btn-primary")) {
         showModal(item);
       }
@@ -145,8 +148,8 @@ function displayProducts(arr) {
   });
 }
 
-//! SHOW MODAL
-
+//+ SHOW MODAL
+//-her BİR ÜRÜNÜN İSTENİLEN ÖZELLİĞİNİ MODALbODY NİN İÇİNE YAZDIRDI
 function showModal(product) {
   const { image, title, description, price } = product;
 
@@ -175,7 +178,7 @@ function showModal(product) {
 
 // ! SAKLA -- MAP İLE İÇERİK DEĞİŞTİRME
 
-//! ADD TO CART
+//+ ADD TO CART   ( bu fonksiyonu tam anlayamadım)
 //* objelerde veri saklama yolu {key:value}
 
 function addToCart(product) {
@@ -210,14 +213,14 @@ function addToCart(product) {
   showCanvas(baskets);
   calculateProducts(baskets);
 }
-
+//+kategory butonları tıklandığında bu categorinin adını alttaki category: bölümüne yaz
 btnDivs.addEventListener("click", (e) => {
   if (e.target.classList.contains("btn")) {
     //! butonun innerText'ini yakala. Yazdırdığını da kategori title a yazdır.
     const selectedCategory = e.target.innerText.toLowerCase();
     categoryTitle.innerText = selectedCategory.toUpperCase();
 
-    //! INPUT KONTROLÜ
+    //+ INPUT KONTROLÜ
     const value = searchInput.value;
 
     //* bunun için yine filterdan devam edebiliriz. && item.title.includes(value.toLowerCase())
@@ -248,7 +251,7 @@ searchInput.addEventListener("input", (e) => {
   displayProducts(filteredProducts);
 });
 
-//? DRY
+//? DRY( do not repeat yourself)
 
 function filtered(selectedCategory, value) {
   //+ Her butona tıklandığında ve her tıklama olayınca sadece istenilen verilerin gelmesi
@@ -265,8 +268,8 @@ function filtered(selectedCategory, value) {
   return newArr;
 }
 
-//* SHOW CANVAS
-
+//+ SHOW CANVAS
+// canvas acıldığında sepeti gez her bir ürübün istenilen degerlerini basketa yazdır
 const showCanvas = (baskets) => {
   console.log(baskets);
 
@@ -312,7 +315,8 @@ const showCanvas = (baskets) => {
 
 
 
-//* CALCULATION
+//+ CALCULATION
+//sepetteki ürünlerin toplam fiyatı
 const calculateProducts = (baskets) => {
   const result1 = baskets.reduce((acc, basket) => acc + basket.quantity * basket.price, 0);
   console.log(result1);
@@ -333,7 +337,7 @@ const calculateProducts = (baskets) => {
 // kural: üstekini bul çağır bubling yap.
 
 
-//! hesaplama işlemi
+//+ hesaplama işlemi
 
 canvasBody.addEventListener("click", (e) => {
 
@@ -384,7 +388,7 @@ canvasBody.addEventListener("click", (e) => {
     const title = card.querySelector(".card-title").innerText;
 
     //! silme işlemi title eşit değilse basket itemı güncelle
-    //+ arrayden istenileni çıkarmak için filter metoduyla olmayan hariç hepsini yazdır yaparak array güncellendi.
+    //+ arrayden istenileni çıkarmak için (filter metoduyla olmayan hariç hepsini yazdır )yaparak array güncellendi.
 
     const basketItem = baskets.filter(item => item.title !== title);
     countBasket--;
